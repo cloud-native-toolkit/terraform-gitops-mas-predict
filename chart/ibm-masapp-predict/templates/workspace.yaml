@@ -1,0 +1,17 @@
+apiVersion: apps.mas.ibm.com/v1
+kind: PredictWorkspace
+metadata:
+  name: {{ .Values.workspace.name | quote }}
+  labels:
+    mas.ibm.com/instanceId: {{ .Values.masapp.instanceid | quote  }}
+    mas.ibm.com/workspaceId: {{ .Values.masapp.workspaceid | quote  }}
+    mas.ibm.com/applicationId: {{ .Values.masapp.appid | quote  }}
+    {{- include "ibm-masapp-predict.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "3" 
+spec:
+  bindings:
+    health: {{ .Values.workspace.health_scope }}
+    jdbc: {{ .Values.workspace.jdbc_scope }}
+    monitor: {{ .Values.workspace.monitor_scope }}
+    watsonstudio: {{ .Values.workspace.studio_scope }}
