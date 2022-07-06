@@ -34,6 +34,10 @@ SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
 LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
 TYPE=$(jq -r '.type // "base"' gitops-output.json)
 
+APPNAME=$(jq -r '.appname // "manage"' gitops-output.json)
+WSNAME=$(jq -r '.ws_name // "demo"' gitops-output.json)
+INSTANCEID=$(jq -r '.inst_name // "masdemo"' gitops-output.json)
+
 mkdir -p .testrepo
 
 git clone https://${GIT_TOKEN}@${GIT_REPO} .testrepo
@@ -43,6 +47,10 @@ cd .testrepo || exit 1
 find . -name "*"
 
 set -e
+
+# need to wait to allow git to merge all the branches before validating content
+echo "waiting 5m to allow git to finish merging all branches..."
+sleep 5m
 
 validate_gitops_content "${NAMESPACE}" "${LAYER}" "${SERVER_NAME}" "${TYPE}" "${COMPONENT_NAME}" "values.yaml"
 
